@@ -11,7 +11,7 @@ HEIGHT = 700
 FPS = 60
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Python Auto Defense")
+pygame.display.set_caption("Qamro's Auto Defense")
 clock = pygame.time.Clock()
 
 # colors
