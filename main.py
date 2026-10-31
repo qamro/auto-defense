@@ -59,3 +59,59 @@ def lane_x(lane):
 
 def distance(a, b):
     return math.hypot(a.x - b.x, a.y - b.y)
+
+
+# build the enemy
+
+class Enemy:
+    def __init__(self, lane, speed):
+        self.lane = lane
+        self.x = lane_x(lane)
+        self.y = -ENEMY_SIZE
+        self.speed = speed
+        self.radius = ENEMY_SIZE // 2
+
+    @property
+    def rect(self):
+        return pygame.Rect(
+            int(self.x - self.radius),
+            int(self.y - self.radius),
+            ENEMY_SIZE,
+            ENEMY_SIZE
+        )
+
+    def update(self):
+        self.y += self.speed
+
+    def draw(self):
+        # glow
+        pygame.draw.circle(
+            screen,
+            (80, 25, 30),
+            (int(self.x), int(self.y)),
+            self.radius + 10
+        )
+
+        pygame.draw.circle(
+            screen,
+            RED,
+            (int(self.x), int(self.y)),
+            self.radius
+        )
+
+        pygame.draw.circle(
+            screen,
+            ORANGE,
+            (int(self.x), int(self.y)),
+            self.radius - 9,
+            3
+        )
+
+        pygame.draw.circle(
+            screen,
+            WHITE,
+            (int(self.x), int(self.y)),
+            5
+        )
+        
+
