@@ -275,3 +275,140 @@ def nearest_enemy(turret, enemies):
 # fire helper
 def fire(turret, target):
     return turret.fire(target)
+
+
+# design and draw the game
+
+def draw_background():
+    screen.fill(BG)
+
+    total_width = LANES * LANE_WIDTH + (LANES - 1) * LANE_GAP
+    left = (WIDTH - total_width) // 2
+
+    for lane in range(LANES):
+        x = left + lane * (LANE_WIDTH + LANE_GAP)
+
+        lane_rect = pygame.Rect(
+            x,
+            55,
+            LANE_WIDTH,
+            HEIGHT - 125
+        )
+
+        pygame.draw.rect(
+            screen,
+            (8, 20, 30),
+            lane_rect,
+            border_radius=8
+        )
+
+        pygame.draw.rect(
+            screen,
+            GRID,
+            lane_rect,
+            2,
+            border_radius=8
+        )
+
+        # lane lines
+        for y in range(75, HEIGHT - 100, 35):
+            pygame.draw.line(
+                screen,
+                (25, 70, 95),
+                (x + 10, y),
+                (x + LANE_WIDTH - 10, y),
+                2
+            )
+
+        # lane number
+        label = SMALL_FONT.render(
+            f"{lane + 1:02d}",
+            True,
+            (70, 90, 105)
+        )
+
+        screen.blit(
+            label,
+            label.get_rect(
+                center=(x + LANE_WIDTH // 2, HEIGHT - 145)
+            )
+        )
+
+
+def draw_hud(score, speed, lives):
+    score_text = FONT.render(
+        f"SCORE: {score}",
+        True,
+        WHITE
+    )
+
+    speed_text = FONT.render(
+        f"SPEED: {speed:.1f}",
+        True,
+        CYAN
+    )
+
+    lives_text = FONT.render(
+        f"LIVES: {lives}",
+        True,
+        WHITE
+    )
+
+    screen.blit(score_text, (25, 18))
+    screen.blit(
+        speed_text,
+        (WIDTH // 2 - speed_text.get_width() // 2, 18)
+    )
+    screen.blit(
+        lives_text,
+        (WIDTH - lives_text.get_width() - 25, 18)
+    )
+
+
+def draw_game_over(score):
+    overlay = pygame.Surface(
+        (WIDTH, HEIGHT),
+        pygame.SRCALPHA
+    )
+
+    overlay.fill((0, 0, 0, 185))
+    screen.blit(overlay, (0, 0))
+
+    title = BIG_FONT.render(
+        "SYSTEM OVERRUN",
+        True,
+        RED
+    )
+
+    score_text = FONT.render(
+        f"Final score: {score}",
+        True,
+        WHITE
+    )
+
+    restart = SMALL_FONT.render(
+        "Press R to restart  •  ESC to quit",
+        True,
+        WHITE
+    )
+
+    screen.blit(
+        title,
+        title.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2 - 70)
+        )
+    )
+
+    screen.blit(
+        score_text,
+        score_text.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2)
+        )
+    )
+
+    screen.blit(
+        restart,
+        restart.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2 + 55)
+        )
+    )
