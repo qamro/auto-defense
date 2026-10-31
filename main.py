@@ -115,3 +115,88 @@ class Enemy:
         )
         
 
+# the turret
+
+class Turret:
+    def __init__(self, lane):
+        self.lane = lane
+        self.x = lane_x(lane)
+        self.y = TURRET_Y
+
+        self.cooldown = random.randint(0, 25)
+        self.fire_delay = 28
+
+    def update(self):
+        if self.cooldown > 0:
+            self.cooldown -= 1
+
+    def can_fire(self):
+        return self.cooldown <= 0
+
+    def fire(self, target):
+        self.cooldown = self.fire_delay
+        return Bullet(self.x, self.y - 25, target)
+
+    def draw(self, target=None):
+        # Base
+        base = pygame.Rect(
+            int(self.x - 45),
+            int(self.y - 20),
+            90,
+            45
+        )
+
+        pygame.draw.rect(
+            screen,
+            (25, 45, 60),
+            base,
+            border_radius=10
+        )
+
+        pygame.draw.rect(
+            screen,
+            CYAN,
+            base,
+            2,
+            border_radius=10
+        )
+
+        # turret body
+        pygame.draw.circle(
+            screen,
+            (40, 80, 105),
+            (int(self.x), int(self.y - 5)),
+            24
+        )
+
+        pygame.draw.circle(
+            screen,
+            CYAN,
+            (int(self.x), int(self.y - 5)),
+            20,
+            3
+        )
+
+        # aim toward target
+        if target is not None:
+            dx = target.x - self.x
+            dy = target.y - (self.y - 5)
+            angle = math.atan2(dy, dx)
+
+            end_x = self.x + math.cos(angle) * 38
+            end_y = (self.y - 5) + math.sin(angle) * 38
+
+            pygame.draw.line(
+                screen,
+                WHITE,
+                (int(self.x), int(self.y - 5)),
+                (int(end_x), int(end_y)),
+                8
+            )
+
+        pygame.draw.circle(
+            screen,
+            BLUE,
+            (int(self.x), int(self.y - 5)),
+            8
+        )
