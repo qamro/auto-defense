@@ -200,3 +200,54 @@ class Turret:
             (int(self.x), int(self.y - 5)),
             8
         )
+        
+        
+# design the bullet
+
+class Bullet:
+    def __init__(self, x, y, target):
+        self.x = float(x)
+        self.y = float(y)
+
+        dx = target.x - self.x
+        dy = target.y - self.y
+
+        length = math.hypot(dx, dy)
+
+        if length == 0:
+            self.vx = 0
+            self.vy = -BULLET_SPEED
+        else:
+            self.vx = dx / length * BULLET_SPEED
+            self.vy = dy / length * BULLET_SPEED
+
+        self.radius = 5
+
+    @property
+    def rect(self):
+        return pygame.Rect(
+            int(self.x - self.radius),
+            int(self.y - self.radius),
+            self.radius * 2,
+            self.radius * 2
+        )
+
+    def update(self):
+        self.x += self.vx
+        self.y += self.vy
+
+    def draw(self):
+        pygame.draw.circle(
+            screen,
+            YELLOW,
+            (int(self.x), int(self.y)),
+            self.radius + 4
+        )
+
+        pygame.draw.circle(
+            screen,
+            WHITE,
+            (int(self.x), int(self.y)),
+            self.radius
+        )
+
