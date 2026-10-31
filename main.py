@@ -251,3 +251,24 @@ class Bullet:
             self.radius
         )
 
+# target selection
+
+def nearest_enemy(turret, enemies):
+    """
+    find the closest enemy in the turret's lane
+    """
+
+    lane_enemies = [
+        enemy for enemy in enemies
+        if enemy.lane == turret.lane
+        and enemy.y < turret.y
+    ]
+
+    if not lane_enemies:
+        return None
+
+    return min(
+        lane_enemies,
+        key=lambda enemy: turret.y - enemy.y
+    )
+
