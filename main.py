@@ -440,3 +440,177 @@ def reset_game():
         game_over
     )
 
+# main game
+
+
+(
+    enemies,
+    bullets,
+    turrets,
+    score,
+    speed,
+    lives,
+    spawn_timer,
+    game_over
+) = reset_game()
+
+running = True
+
+while running:
+    clock.tick(FPS)
+
+    
+    # events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+
+            if event.key == pygame.K_r and game_over:
+                (
+                    enemies,
+                    bullets,
+                    turrets,
+                    score,
+                    speed,
+                    lives,
+                    spawn_timer,
+                    game_over
+                ) = reset_game()
+
+
+    # update
+    if not game_over:
+
+        # spawn enemies
+        spawn_timer += clock.get_time()
+
+        current_spawn_time = max(
+            350,
+            SPAWN_TIME - score // 100 * 40
+        )
+
+        if spawn_timer >= current_spawn_time:
+            spawn_timer = 0
+
+            lane = random.randrange(LANES)
+
+            enemy_speed = speed + random.uniform(-0.25, 0.45)
+
+            enemies.append(
+                Enemy(lane, enemy_speed)
+            )
+
+
+        # enemy movement
+
+        for enemy in enemies:
+            enemy.update()
+
+        # if enemies reach the defense line, lose a life
+        for enemy in enemies[:]:
+            if enemy.y >= TURRET_Y - 35:
+                enemies.remove(enemy)
+                lives -= 1
+
+                if lives <= 0:
+                    game_over = True
+                    break
+
+
+        # turret targeting and firing
+        for turret in turrets:
+            turret.update()
+
+            target = nearest_enemy(
+                turret,
+                enemies
+            )
+
+            if target and turret.can_fire():
+                bullets.append(
+                    fire(turret, target)
+                )
+
+
+        # bullet movement
+        for bullet in bullets:
+            bullet.update()
+
+
+        # bullet / enemy collisions
+        #
+        # important:
+        # iterate over copies with [:] so removing objects
+        # during iteration does not cause skipped elements.
+        for bullet in bullets[:]:
+            for enemy in enemies[:]:
+
+                if bullet.rect.colliderect(
+                    enemy.rect
+                ):
+                    if enemy in enemies:
+                        enemies.remove(enemy)
+
+                    if bullet in bullets:
+                        bullets.remove(bullet)
+
+                    score += 100
+                    break
+
+        # remove bullets outside the screen.
+        for bullet in bullets[:]:
+            if (
+                bullet.x < -30
+                or bullet.x > WIDTH + 30
+                or bullet.y < -30
+                or bullet.y > HEIGHT + 30
+            ):
+                bullets.remove(bullet)
+
+
+        # difficulty scaling
+        # here we make it scale smoothly while preserving the behavior
+        if score >= 300:
+            speed = 6
+
+        if score >= 800:
+            speed = 7
+
+        if score >= 1500:
+            speed = 8
+
+
+    # draw
+    draw_background()
+
+    # find targets for turret visuals.
+    targets = [
+        nearest_enemy(turret, enemies)
+        for turret in turrets
+    ]
+
+    for enemy in enemies:
+        enemy.draw()
+
+    for bullet in bullets:
+        bullet.draw()
+
+    for i, turret in enumerate(turrets):
+        turret.draw(targets[i])
+
+    draw_hud(
+        score,
+        speed,
+        lives
+    )
+
+    if game_over:
+        draw_game_over(score)
+
+    pygame.display.flip()
+
+pygame.quit()
