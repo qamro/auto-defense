@@ -412,3 +412,31 @@ def draw_game_over(score):
             center=(WIDTH // 2, HEIGHT // 2 + 55)
         )
     )
+
+
+
+# game reset
+
+def reset_game():
+    enemies = []
+    bullets = []
+    turrets = [Turret(lane) for lane in range(LANES)]
+
+    score = 0
+    speed = BASE_ENEMY_SPEED
+    lives = 3
+
+    spawn_timer = 0
+    game_over = False
+
+    return (
+        enemies,
+        bullets,
+        turrets,
+        score,
+        speed,
+        lives,
+        spawn_timer,
+        game_over
+    )
+
