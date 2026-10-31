@@ -272,3 +272,6 @@ def nearest_enemy(turret, enemies):
         key=lambda enemy: turret.y - enemy.y
     )
 
+# fire helper
+def fire(turret, target):
+    return turret.fire(target)
