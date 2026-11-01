@@ -12,6 +12,7 @@ To run the game just:
 
 then:
 
-**execute these two commands:**
-- source venv/venv/bin/activate                                            # this for activate the virtual environment
+**execute these two commands(this for activate the virtual environment and run the game):**
+ this for activate the virtual environment and run the game
+- source venv/venv/bin/activate                                           
 - python main.py
