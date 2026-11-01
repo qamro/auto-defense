@@ -10,7 +10,7 @@ To run the game just:
 
 **Clone the repo** 
 
-then
+then:
 
 **execute these two commands:**
 - source venv/venv/bin/activate   # this for activate the virtual environment
